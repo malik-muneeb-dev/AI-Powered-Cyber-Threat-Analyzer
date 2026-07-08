@@ -1,0 +1,11 @@
+Flask
+Flask-SQLAlchemy
+Flask-CORS
+joblib
+pandas
+scikit-learn
+fpdf
+pefile
+requests
+python-whois
+textdistance

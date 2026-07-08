@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CYBER THREAT - URL Analyzer</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        /* Safe Status  Green color */
+        .status-safe-green {
+            color: #00ff88 !important;
+            border-color: #00ff88 !important;
+            text-shadow: 0 0 10px #00ff88;
+            background: rgba(0, 255, 136, 0.1) !important;
+        }
+    </style>
+</head>
+<body>
+
+<div class="digital-grid"></div>
+<div class="scan-lines"></div>
+<div class="vignette"></div>
+<div class="data-stream">
+    <div class="stream-line line1"></div>
+    <div class="stream-line line2"></div>
+</div>
+
+<nav>
+    <div class="logo">
+        <i class="fas fa-fingerprint" style="color:#00f3ff;"></i> CYBER THREAT ANALYZER
+    </div>
+    <div class="nav-links">
+        <a href="{{ url_for('home') }}">DASHBOARD</a> 
+        <a href="{{ url_for('history') }}">HISTORY</a>
+        <a href="#">SETTINGS</a>
+    </div>
+</nav>
+
+<div class="container">
+    <main class="main-content">
+        <div class="input-section card">
+            <label for="url-input">Enter Website URL to Analyze...</label>
+            <form method="POST" class="input-group">
+                <input type="text" name="url" id="url-input" placeholder="https://secure-login-bank.com" required>
+                <button type="submit" id="scan-button" class="scan-btn-glow">SCAN URL</button>
+            </form>
+        </div>
+
+        <div id="results-section" class="results-grid">
+            <div class="nlp-card card">
+                <div class="nlp-header">
+                    <span class="nlp-title">AI SECURITY ANALYSIS</span>
+                    <div class="strength-badge">STATUS : WAITING</div>
+                </div>
+                <div id="nlp-results">
+                    <p class="warning-item"><span class="icon">🔍</span> Domain: None</p>
+                    <p class="warning-item"><span class="icon">🤖</span> AI Accuracy: 92.03%</p>
+                    <p class="warning-item"><span class="icon">⚠</span> None</p>
+                </div>
+            </div>
+
+            <div class="crack-time-card card">
+                <h3>THREAT RISK LEVEL</h3>
+                <div class="crack-time-display">
+                    <div class="dial-container">
+                        <h1 style="color: #00f3ff; font-family: 'Orbitron'; font-size: 1rem;">ANALYZED</h1>
+                    </div>
+                    <div class="crack-time-details">
+                       <p>Risk Score: <span class="value">0</span></p>
+                       <p>Status: <span class="value">ACTIVE SCAN</span></p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="breach-card card">
+                <h3>DOMAIN FORENSICS</h3>
+                <p>Website Age: <span class="count">Checking...</span></p>
+                <div class="progress-bar-container">
+                    <div class="progress-bar" style="width: 0%; background: #00f3ff;"></div> 
+                </div>
+                <p class="breach-source">WHOIS DATABASE CHECK</p>
+            </div>
+
+            <div class="generator-card card">
+                <h3>SECURITY RECOMMENDATION</h3>
+                <div id="generated-passwords">
+                    <!-- Recommendations dynamic -->
+                    <p class="generated-item">Waiting for scan...</p>
+                    <p class="generated-item">Always check for HTTPS encryption.</p>
+                </div>
+            </div>
+        </div> 
+    </main>
+</div>
+
+<script>
+document.querySelector('form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const urlInput = document.getElementById('url-input').value;
+    const btn = document.querySelector('.scan-btn-glow');
+    const statusBadge = document.querySelector('.strength-badge');
+    const recContent = document.getElementById('generated-passwords');
+    const warningItem = document.querySelectorAll('.warning-item')[2];
+    
+    btn.innerText = "SCANNING...";
+    
+    try {
+        const response = await fetch('/url_tool', {
+            method: 'POST',
+            headers: { 
+                'Content-Type': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest'
+            },
+            body: JSON.stringify({ url: urlInput })
+        });
+        const data = await response.json();
+
+        // --- 1. STATUS BADGE & COLOR LOGIC ---
+        statusBadge.innerText = "STATUS : " + data.ai_prediction;
+        
+        if (data.ai_prediction.toLowerCase().includes("phishing")) {
+            statusBadge.classList.remove('status-safe-green');
+            statusBadge.style.color = "#ff2a2a";
+            statusBadge.style.borderColor = "#ff2a2a";
+            statusBadge.style.textShadow = "0 0 10px #ff2a2a";
+            statusBadge.style.background = "rgba(255, 42, 42, 0.1)";
+            
+            // Phishing Recommendation
+            recContent.innerHTML = `
+                <p class="generated-item" style="color:#ff2a2a">⚠️ DANGER: Malicious URL detected!</p>
+                <p class="generated-item">⚠️ Do not provide personal credentials.</p>
+            `;
+        } else {
+            // SAFE Logic: Add Green Class
+            statusBadge.classList.add('status-safe-green');
+            
+            // Safe Recommendation
+            recContent.innerHTML = `
+                <p class="generated-item" style="color:#00ff88">✓ Domain appears secure and safe.</p>
+                <p class="generated-item">✓ Verified source - No threats found.</p>
+            `;
+        }
+
+        // --- 2. DOMAIN & TYPO WARNING ---
+        document.querySelectorAll('.warning-item')[0].innerHTML = `<span class="icon">🔍</span> Domain: ${data.domain}`;
+        warningItem.innerHTML = `<span class="icon">⚠</span> ${data.typo_warning}`;
+        
+        if (data.typo_warning !== "None") {
+            warningItem.style.color = "#ff2a2a";
+            recContent.innerHTML += `<p class="generated-item" style="color:#ffb800">⚠ Alert: Possible Typo-Squatting trap.</p>`;
+        } else {
+            warningItem.style.color = "#ccc";
+        }
+        
+        // --- 3. RISK SCORE & AGE ---
+        document.querySelector('.value').innerText = data.risk_score;
+        document.querySelector('.count').innerText = data.age_info;
+        document.querySelector('.progress-bar').style.width = data.risk_score + "%";
+        
+        btn.innerText = "SCAN URL";
+
+    } catch (err) {
+        btn.innerText = "ERROR";
+        console.error(err);
+    }
+});
+
+window.onload = function() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const val = urlParams.get('val');
+    if (val) {
+        document.getElementById('url-input').value = val;
+    }
+}
+</script>
+
+</body>
+</html>
