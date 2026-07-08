@@ -1,1 +1,58 @@
-# AI-Powered-Cyber-Threat-Analyzer
+
+🛡️ AI-Powered Cyber Threat Analyzer (Cyber Shield)
+![alt text](https://img.shields.io/badge/Python-3.9+-blue.svg?style=for-the-badge&logo=python)
+
+![alt text](https://img.shields.io/badge/Framework-Flask-red.svg?style=for-the-badge&logo=flask)
+
+![alt text](https://img.shields.io/badge/ML-Scikit--Learn-orange.svg?style=for-the-badge&logo=scikit-learn)
+
+![alt text](https://img.shields.io/badge/Status-Production--Ready-success?style=for-the-badge)
+An industry-grade cybersecurity intelligence platform integrating Machine Learning and Static Heuristic Forensics to identify, classify, and mitigate digital threats. This project features a centralized web-based security dashboard and a real-time Manifest V3 Chrome Extension for proactive threat detection.
+1.  Intelligent Password Auditor
+ML-Based Classification: Implements a Logistic Regression model with character-level TF-IDF vectorization to determine password complexity beyond basic length checks.
+Breach Intelligence: Utilizes K-Anonymity with SHA-1 hashing to securely query global breach databases (HaveIBeenPwned API) without exposing raw credentials.
+Predictive Heuristics: Detects high-risk patterns such as birth years, common nomenclature, and dictionary-based sequences using NLP-based regex auditing.
+2.  Phishing & Typo-Squatting Scanner
+Ensemble Detection: Driven by a Random Forest Classifier trained on balanced phishing/legitimate URL datasets for high-precision classification.
+Deception Analysis: Employs Jaro-Winkler Distance and Leetspeak Normalization to identify typo-squatting domains (e.g., mimicking financial institutions).
+Metadata Forensics: Integrated WHOIS lookup to analyze domain age and registration anomalies.
+3.  Malware PE Forensics
+Static Binary Analysis: Parses Windows Portable Executable (PE) structures using pefile to extract machine headers and section metadata without execution risk.
+Entropy Auditing: Calculates mathematical entropy to detect packed, encrypted, or obfuscated malicious payloads.
+Heuristic Mapping: Maps binary characteristics against trained features to predict malicious intent with high confidence.
+    Technical Stack
+Backend: Flask (Python) Micro-framework.
+AI/ML: Scikit-learn (Logistic Regression, Random Forest), Pandas, Joblib.
+Security Tools: SHA-1 Hashing, WHOIS Intelligence, PE-Header Forensics.
+Database: SQLAlchemy (SQLite) for encrypted user session management.
+Extension: JavaScript (Manifest V3 API).
+Documentation: Automated PDF Security Report generation via FPDF.
+ Installation & Deployment
+1. Environment Setup
+Clone the repository and install the required dependencies:
+code
+Bash
+git clone https://github.com/malik-muneeb-dev/AI-Powered-Cyber-Threat-Analyzer.git
+cd AI-Powered-Cyber-Threat-Analyzer
+pip install -r requirements.txt
+2. Download Pre-trained Models 
+Due to the large file size of the trained Machine Learning models (.pkl), they are hosted in the GitHub Releases section.
+Go to the Releases tab.
+Download all .pkl files.
+Place the downloaded models directly in the root directory of the project.
+3. Launch Application
+Initialize the database and run the Flask server:
+code
+Bash
+python app.py
+Access the security dashboard at http://127.0.0.1:5000.
+ Performance Metrics
+URL Detection Accuracy: ~92.03% (Random Forest Classifier).
+API Latency: ~800ms for real-time Chrome Extension alerts.
+Static Forensics: Zero-execution risk analysis of .exe headers.
+👤 Developer
+Malik Muneeb
+Computer Science Graduate | AI & Cybersecurity Enthusiast
+📍 Wah Cantt, Pakistan
+🔗 LinkedIn | 📧 itsmuneeb22520@gmail.com
+This project was developed as a Final Year Project (FYP) and secured a top position for its technical execution and innovative approach.
